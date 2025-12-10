@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
+  const createGroupForm = document.getElementById("create-group-form");
+  const createMessageDiv = document.getElementById("create-message");
 
   // Function to fetch activities from API
   async function fetchActivities() {
@@ -12,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Clear loading message
       activitiesList.innerHTML = "";
+      
+      // Clear existing options (except the first one)
+      activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
 
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
@@ -40,6 +45,57 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error fetching activities:", error);
     }
   }
+
+  // Handle create group form submission
+  createGroupForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const groupName = document.getElementById("group-name").value;
+    const groupDescription = document.getElementById("group-description").value;
+    const groupSchedule = document.getElementById("group-schedule").value;
+    const groupMaxParticipants = parseInt(document.getElementById("group-max-participants").value);
+
+    try {
+      const response = await fetch("/activities", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: groupName,
+          description: groupDescription,
+          schedule: groupSchedule,
+          max_participants: groupMaxParticipants,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        createMessageDiv.textContent = result.message;
+        createMessageDiv.className = "success";
+        createGroupForm.reset();
+        
+        // Refresh the activities list
+        await fetchActivities();
+      } else {
+        createMessageDiv.textContent = result.detail || "An error occurred";
+        createMessageDiv.className = "error";
+      }
+
+      createMessageDiv.classList.remove("hidden");
+
+      // Hide message after 5 seconds
+      setTimeout(() => {
+        createMessageDiv.classList.add("hidden");
+      }, 5000);
+    } catch (error) {
+      createMessageDiv.textContent = "Failed to create group. Please try again.";
+      createMessageDiv.className = "error";
+      createMessageDiv.classList.remove("hidden");
+      console.error("Error creating group:", error);
+    }
+  });
 
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
