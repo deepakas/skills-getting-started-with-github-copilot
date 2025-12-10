@@ -13,6 +13,30 @@
     </header>
 
     <main>
+      <section id="create-group-container">
+        <h3>Create a New Group</h3>
+        <form id="create-group-form">
+          <div class="form-group">
+            <label for="group-name">Group Name:</label>
+            <input type="text" id="group-name" required placeholder="e.g., Book Club" />
+          </div>
+          <div class="form-group">
+            <label for="group-description">Description:</label>
+            <textarea id="group-description" required placeholder="What is this group about?" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="group-schedule">Schedule:</label>
+            <input type="text" id="group-schedule" required placeholder="e.g., Mondays, 4:00 PM - 5:00 PM" />
+          </div>
+          <div class="form-group">
+            <label for="group-max-participants">Max Participants:</label>
+            <input type="number" id="group-max-participants" required min="1" placeholder="e.g., 15" />
+          </div>
+          <button type="submit">Create Group</button>
+        </form>
+        <div id="create-message" class="hidden"></div>
+      </section>
+
       <section id="activities-container">
         <h3>Available Activities</h3>
         <div id="activities-list">
